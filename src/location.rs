@@ -6,7 +6,7 @@ use crate::{
 };
 
 /// Generic structure to point to some type `T` within a file or to the synthetic orgin.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Located<T> {
     File(&'static origin::File, T),
     Macro(&'static origin::Macro),
@@ -35,7 +35,14 @@ impl<T> Located<T> {
 }
 
 /// Newtype around `Located<usize>`. Points to the position in file or to the synthetic origin.
+#[derive(Debug, PartialEq)]
 pub struct Location(Located<usize>);
+
+impl Location {
+    pub fn new(location: Located<usize>) -> Self {
+        Self(location)
+    }
+}
 
 impl<'a, S: CodeSpan + ?Sized> From<GetSpanInfoResult<'a, S>> for Location {
     fn from(value: GetSpanInfoResult<'a, S>) -> Self {
