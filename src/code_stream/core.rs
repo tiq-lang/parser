@@ -35,7 +35,7 @@ pub enum SpanOrigin {
 /// ## Invariants
 /// * `SpanId`s of two bytes, that come from a single stream, compare equal if and only if
 /// these bytes and all bytes between them come from a single span.
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct SpanId(pub(super) NonZero<usize>);
 
 /// Main interface of interaction with the span system.
