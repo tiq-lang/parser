@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 rand = "0.9.2"
+phf = { version = "0.12", features = ["macros"] }
+strum = { version = "0.27", features = ["derive"] }
