@@ -1,0 +1,9 @@
+[package]
+name = "parser-lang"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+
+[dependencies]
+parser-core = { path = "../parser-core" }
