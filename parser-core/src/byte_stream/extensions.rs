@@ -1,11 +1,11 @@
-//! This module contains the `CodeStreamExtensions` trait, which provides utilities to simplify
-//! low-level parsing with code streams.
+//! This module contains various extension traits, which provide utilities to simplify low-level
+//! parsing with byte streams.
 
-use super::core::CodeStream;
+use super::core::ByteStream;
 use std::{mem::MaybeUninit, num::NonZero};
 
 /// Trait that provides `advancing_read` method.
-pub trait AdvancingRead: CodeStream {
+pub trait AdvancingRead: ByteStream {
     /// Extract `destination.len()` bytes from stream to `destination` while advancing it.
     ///
     /// ## Safety
@@ -31,10 +31,10 @@ pub trait AdvancingRead: CodeStream {
     }
 }
 
-impl<S: CodeStream + ?Sized> AdvancingRead for S {}
+impl<S: ByteStream + ?Sized> AdvancingRead for S {}
 
-/// Trait that provides `take_while` family of functions.
-pub trait TakeWhile<P>: CodeStream
+/// Trait that provides `take_while` family of methods.
+pub trait TakeWhile<P>: ByteStream
 where
     P: FnMut(u8) -> bool,
 {
@@ -86,13 +86,13 @@ where
 
 impl<S, P> TakeWhile<P> for S
 where
-    S: CodeStream + ?Sized,
+    S: ByteStream + ?Sized,
     P: FnMut(u8) -> bool,
 {
 }
 
-/// Trait that provides `take_common_prefix` family of functions.
-pub trait TakeCommonPrefix: CodeStream {
+/// Trait that provides `take_common_prefix` family of methods.
+pub trait TakeCommonPrefix: ByteStream {
     /// Peeks bytes from the stream with provided `offset` and checks them for equality with
     /// `prefix`. Finishes after the first mismatched byte or after the prefix is exhausted.
     /// Returns the amount of bytes that match ones from prefix. This function doesn't modify the
@@ -126,10 +126,10 @@ pub trait TakeCommonPrefix: CodeStream {
     }
 }
 
-impl<S: CodeStream + ?Sized> TakeCommonPrefix for S {}
+impl<S: ByteStream + ?Sized> TakeCommonPrefix for S {}
 
-/// Trait that provides `starts_with` family of functions.
-pub trait StartsWith: CodeStream {
+/// Trait that provides `starts_with` family of methods.
+pub trait StartsWith: ByteStream {
     /// Runs `self.take_common_prefix_offset(bytes, offset)` and checks if returned amount of bytes
     /// matches `bytes.len()`.
     ///
@@ -163,10 +163,10 @@ pub trait StartsWith: CodeStream {
     }
 }
 
-impl<S: CodeStream + ?Sized> StartsWith for S {}
+impl<S: ByteStream + ?Sized> StartsWith for S {}
 
-/// Trait that provides `starts_with_and` family of functions.
-pub trait StartsWithAnd<P>: CodeStream
+/// Trait that provides `starts_with_and` family of methods.
+pub trait StartsWithAnd<P>: ByteStream
 where
     P: FnOnce(Option<u8>) -> bool,
 {
@@ -217,7 +217,7 @@ where
 
 impl<S, P> StartsWithAnd<P> for S
 where
-    S: CodeStream + ?Sized,
+    S: ByteStream + ?Sized,
     P: FnOnce(Option<u8>) -> bool,
 {
 }
