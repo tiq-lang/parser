@@ -46,6 +46,10 @@ impl ErrorStack for Vec<Box<dyn Any>> {
         let index = self.len().checked_sub(amount.get())?;
         Some(self.get_mut(index..)?.iter_mut())
     }
+
+    fn inspect_last_error(&mut self) -> Option<&mut Box<dyn Any>> {
+        self.last_mut()
+    }
 }
 
 /// Replaces specified memory location with the pointer to uninitialized memory.
