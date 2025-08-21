@@ -16,7 +16,15 @@ pub trait ErrorStack {
         Self: 'a;
 
     /// Push type-erased error onto the stack.
-    fn push_error(&mut self, error: Box<dyn Any>);
+    fn push_erased_error(&mut self, error: Box<dyn Any>);
+
+    /// Same as `self.push_erased_error(Box::new(error))`.
+    fn push_error<E>(&mut self, error: E)
+    where
+        E: 'static,
+    {
+        self.push_erased_error(Box::new(error));
+    }
 
     /// Produces an iterator over the last `amount` errors pushed onto the stack. Returns `None`
     /// only if `amount` is larger than the size of a stack.
@@ -38,13 +46,17 @@ impl ErrorStack for Vec<Box<dyn Any>> {
     where
         Self: 'a;
 
-    fn push_error(&mut self, error: Box<dyn Any>) {
+    fn push_erased_error(&mut self, error: Box<dyn Any>) {
         self.push(error);
     }
 
     fn inspect_errors<'a>(&'a mut self, amount: NonZero<usize>) -> Option<Self::Iterator<'a>> {
         let index = self.len().checked_sub(amount.get())?;
         Some(self.get_mut(index..)?.iter_mut())
+    }
+
+    fn inspect_last_error(&mut self) -> Option<&mut Box<dyn Any>> {
+        self.last_mut()
     }
 }
 
